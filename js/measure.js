@@ -104,6 +104,7 @@ var measure = (function (measure) {
     debug("---------------------------------------------");
     switch (data.event) {
     case "pageview":
+      // do nothing
       break;
     case "leadFormSent":
     case "loginFormSent":
@@ -116,18 +117,46 @@ var measure = (function (measure) {
   return measureInterface;
 }(measure));
 
-var tag = document.createElement("script");
-tag.src = "https://www.youtube.com/iframe_api";
-var firstScriptTag = document.getElementsByTagName("script")[0];
-firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+/*
+ * Init Youtube Iframe API
+ */
+(function() {
+  var tag = document.createElement("script");
+  tag.src = "https://www.youtube.com/iframe_api";
+  var firstScriptTag = document.getElementsByTagName("script")[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+})();
 
-var player;
-function onYouTubeIframeAPIReady() {
-  player = new YT.Player("player", {
-    events: {
-      "onStateChange": onPlayerStateChange
+
+/*
+ * Global Variable for available Youtube players
+ */
+var youtubePlayers = [],
+  youtubePlayerIframes = [];
+
+/*
+ * Refresh iframes without enabled API
+ */
+function refreshIframeAPI() {
+  for (var iframes = document.getElementsByTagName("iframe"), i = iframes.length; i--;) {
+    if (/youtube.com\/embed/.test(iframes[i].src)) {
+      youtubePlayerIframes.push(iframes[i]);
+      if (iframes[i].src.indexOf('enablejsapi=') === -1) {
+        iframes[i].src += (iframes[i].src.indexOf('?') === -1 ? '?' : '&') + 'enablejsapi=1';
+      }
     }
-  });
+  }
+}
+
+function onYouTubeIframeAPIReady() {
+  refreshIframeAPI();
+  for (var i = 0; i < youtubePlayerIframes.length; i++) {
+    youtubePlayers.push(new YT.Player(youtubePlayerIframes[i], {
+      events: {
+        "onStateChange": onPlayerStateChange
+      }
+    }));
+  }
 }
 
 function onPlayerStateChange(event) {
