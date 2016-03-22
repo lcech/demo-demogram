@@ -86,52 +86,7 @@
       </div>
     </div>
     <div class="container">
-      <!-- 1. The <iframe> (and video player) will replace this <div> tag.-->
-      <div id="player"></div>
-      <script type="text/javascript">
-        // 2. This code loads the IFrame Player API code asynchronously.
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-        // 3. This function creates an <iframe> (and YouTube player)
-        //    after the API code downloads.
-        var player;
-        function onYouTubeIframeAPIReady() {
-          player = new YT.Player('player', {
-            height: '390',
-            width: '640',
-            videoId: 'wofkHuZm4Kg',
-            events: {
-              'onReady': onPlayerReady,
-              'onStateChange': onPlayerStateChange
-            }
-          });
-        }
-        // 4. The API will call this function when the video player is ready.
-        function onPlayerReady(event) {
-          // do nothing
-        }
-        // 5. The API calls this function when the player's state changes.
-        //    The function indicates that when playing a video (state=1),
-        //    the player should play for six seconds and then stop.
-        var done = false;
-        function onPlayerStateChange(event) {
-          var videoData;
-          videoData = event.target.getVideoData();
-          switch (event.data) {
-          case YT.PlayerState.PLAYING:
-            measure({event: "videoPlay", video: {id: videoData.video_id, title: videoData.title}});
-            break;
-          case YT.PlayerState.PAUSED:
-            measure({event: "videoPause", video: {id: videoData.video_id, title: videoData.title, timePlayed: event.target.getCurrentTime()}});
-            break;
-          case YT.PlayerState.ENDED:
-            measure({event: "videoEnd", video: {id: videoData.video_id, title: videoData.title, timePlayed: event.target.getCurrentTime()}});
-            break;
-          }
-        }
-      </script>
+      <iframe id="player" allowfullscreen="" frameborder="0" height="301" src="https://www.youtube.com/embed/wofkHuZm4Kg?enablejsapi=1" width="535"></iframe>
     </div>
     <hr>
     <div class="container">

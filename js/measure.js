@@ -1,4 +1,4 @@
-/*global digitalData,_satellite*/
+/*global digitalData,YT*/
 var digitalData = digitalData || {};
 digitalData._log = digitalData._log || [];
 
@@ -102,22 +102,46 @@ var measure = (function (measure) {
     debug("Event captured. Available data:");
     debug(JSON.stringify(digitalDataSnapshot, null, 4));
     debug("---------------------------------------------");
-    /*
     switch (data.event) {
     case "pageview":
-      if (data.error) {
-        //do nothing
-      }
-      _satellite.pageBottom();
       break;
     case "leadFormSent":
     case "loginFormSent":
     case "contactFormSent":
     case "fileDownload":
-      _satellite.track(data.event);
+      // do nothing
       break;
     }
-    */
   };
   return measureInterface;
 }(measure));
+
+var tag = document.createElement("script");
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName("script")[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+var player;
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player("player", {
+    events: {
+      "onStateChange": onPlayerStateChange
+    }
+  });
+}
+
+function onPlayerStateChange(event) {
+  var videoData;
+  videoData = event.target.getVideoData();
+  switch (event.data) {
+  case YT.PlayerState.PLAYING:
+    measure({event: "videoPlay", video: {id: videoData.video_id, title: videoData.title}});
+    break;
+  case YT.PlayerState.PAUSED:
+    measure({event: "videoPause", video: {id: videoData.video_id, title: videoData.title, timePlayed: event.target.getCurrentTime()}});
+    break;
+  case YT.PlayerState.ENDED:
+    measure({event: "videoEnd", video: {id: videoData.video_id, title: videoData.title, timePlayed: event.target.getCurrentTime()}});
+    break;
+  }
+}
