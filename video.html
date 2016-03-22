@@ -117,16 +117,17 @@
         //    the player should play for six seconds and then stop.
         var done = false;
         function onPlayerStateChange(event) {
-          debug(event);
+          var videoData;
+          videoData = event.target.getVideoData();
           switch (event.data) {
           case YT.PlayerState.PLAYING:
-            measure({event: "videoPlay"});
+            measure({event: "videoPlay", video: {id: videoData.video_id, title: videoData.title}});
             break;
           case YT.PlayerState.PAUSED:
-            measure({event: "videoPause", timePlayed: event.target.getCurrentTime()});
+            measure({event: "videoPause", video: {id: videoData.video_id, title: videoData.title, timePlayed: event.target.getCurrentTime()}});
             break;
           case YT.PlayerState.ENDED:
-            measure({event: "videoEnd", timePlayed: event.target.getCurrentTime()});
+            measure({event: "videoEnd", video: {id: videoData.video_id, title: videoData.title, timePlayed: event.target.getCurrentTime()}});
             break;
           }
         }
