@@ -1,8 +1,8 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    
-    RewriteCond %{HTTP_HOST} ^aveko\.cz$ [NC]
-    RewriteRule ^(.*)$ http://www.aveko.cz/$1 [R=301,L]
-    
-    RewriteRule ^index\.html$ / [R=301,L]
+
+    RewriteCond %{HTTPS} off
+    RewriteRule .* https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    RewriteRule ^index\.html$ / [L,R=301]
 </IfModule>
