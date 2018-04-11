@@ -20,9 +20,15 @@ var measure = (function (measure) {
    * @param data {object} Object with data to measure
    */
   var measureInterface = function (data) {
+    var digitalDataSnapshot;
     if (typeof data.event !== "undefined") {
       measureInterface._fired = true;
       digitalData = measureInterface._deepMerge(digitalData, data);
+      digitalDataSnapshot = JSON.parse(JSON.stringify(digitalData));
+      delete digitalDataSnapshot._log;
+      debug("Event captured. Available data:");
+      debug(JSON.stringify(digitalDataSnapshot, null, 4));
+      debug("---------------------------------------------");
       data._timestamp = new Date().getTime();
       digitalData._log.push(data);
       measureInterface._process(data);
@@ -45,24 +51,10 @@ var measure = (function (measure) {
    * @private
    */
   measureInterface._deepMerge = function (target, src) {
-    var array = Array.isArray(src);
-    var dst = array && [] || {};
+    var isArray = Array.isArray(src);
+    var dst = isArray && src || {};
 
-    if (array) {
-      target = target || [];
-      dst = dst.concat(target);
-      src.forEach(function(e, i) {
-        if (typeof dst[i] === "undefined") {
-          dst[i] = e;
-        } else if (typeof e === "object") {
-          dst[i] = measureInterface._deepMerge(target[i], e);
-        } else {
-          if (target.indexOf(e) === -1) {
-            dst.push(e);
-          }
-        }
-      });
-    } else {
+    if (!isArray) {
       if (target && typeof target === "object") {
         Object.keys(target).forEach(function (key) {
           dst[key] = target[key];
@@ -96,23 +88,7 @@ var measure = (function (measure) {
    * @param data.username {String}
    */
   measureInterface._process = function (data) {
-    var digitalDataSnapshot;
-    digitalDataSnapshot = JSON.parse(JSON.stringify(digitalData));
-    delete digitalDataSnapshot._log;
-    debug("Event captured. Available data:");
-    debug(JSON.stringify(digitalDataSnapshot, null, 4));
-    debug("---------------------------------------------");
-    switch (data.event) {
-    case "pageview":
-      // do nothing
-      break;
-    case "leadFormSent":
-    case "loginFormSent":
-    case "contactFormSent":
-    case "fileDownload":
-      // do nothing
-      break;
-    }
+    dataLayer.push(data);
   };
   return measureInterface;
 }(measure));

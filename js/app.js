@@ -1,4 +1,7 @@
 var dataLayer = dataLayer || [];
+var output = output || {};
+output.errors = output.errors || [];
+
 //global jQuery
 window.btoa = window.btoa || function () {
   var object = typeof exports != 'undefined' ? exports : this; // #8: web workers
@@ -167,5 +170,113 @@ window.btoa = window.btoa || function () {
       window.location = linkHref;
     }, 500);
   });
+  
+    var $wizardStep1 = $("#wizardStep1");
+  if (typeof $wizardStep1.get(0) !== "undefined") {
+    $wizardStep1.bootstrapValidator({
+      feedbackIcons: {
+        valid: "glyphicon glyphicon-ok",
+        invalid: "glyphicon glyphicon-remove",
+        validating: "glyphicon glyphicon-refresh"
+      },
+      live: "disabled", // only validate submitted form
+      fields: {
+        // Validations configuration
+        name: {
+          validators: {
+            notEmpty: {
+              message: "The text is required and cannot be empty"
+            },
+            stringLength: {
+              min: 6,
+              max: 30,
+              message: "The text must be more than 6 and less than 30 characters long"
+            }
+          }
+        },
+        email: {
+          validators: {
+            notEmpty: {
+              message: "The email is required and cannot be empty"
+            },
+            emailAddress: {
+              message: "The input is not a valid email address"
+            }
+          }
+        }
+      }
+    })
+      .on("error.validator.bv", function(e, data) {
+        var value;
+        switch (data.field) {
+        default:
+          value = data.element[0].value;
+        }
+        output.errors.push({
+          fieldName: data.field,
+          failedRule: data.validator,
+          fieldValue: value
+        });
+      })
+      .on("error.form.bv", function(event) {
+        event.preventDefault();
+
+        output.event = "validationFailed";
+        measure(output);
+        output.errors = [];
+      })
+      .on("success.form.bv", function(event) {
+        var pushId;
+        event.preventDefault();
+
+        output = $(this).serializeObject();
+        output.event = "wizardStep1Sent";
+        output.formId = "Wizard";
+        output.formStep = "1";
+        output.errors = [];
+
+        measure(output);
+
+        $("#step1").hide();
+        $("#step1tab").removeClass("active");
+        $("#step2tab").addClass("active");
+        $("#step2").show();
+      });
+  }
+
+  $("#wizardStep2").on("submit", function(event) {
+    var eventData;
+
+    event.preventDefault();
+
+    eventData = $(this).serializeObject();
+    eventData.formId = "Wizard";
+    eventData.event = "wizardStep2Sent";
+    output.errors = [];
+
+    measure(eventData);
+
+    $("#step2").hide();
+    $("#step2tab").removeClass("active");
+    $("#step3tab").addClass("active");
+    $("#step3").show();
+  });
+
+  $("#wizardStep1 :input").change(function(event) {
+    var $target;
+    $target = $(event.target);
+    measure({
+      event: "inputChange",
+      fieldName: $("label[for=" + $target.attr("id") + "]").text(),
+      fieldValue: $target.val()
+    });
+  });
+
+  $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    measure({
+      event: "tabClick",
+      tabName: $(e.target).text().trim()
+    });
+  })
 
 })(jQuery);

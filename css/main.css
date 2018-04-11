@@ -39,3 +39,31 @@ body {
 .navbar-brand span:hover {
   color: inherit;
 }
+.progress-state {
+  border-bottom: 1px solid #ddd;
+  box-sizing: border-box;
+  margin: 0;
+}
+.progress-state .step, .progress-state .glyphicon {
+  display: block;
+  float: left;
+  line-height: 1.42857143;
+  margin: 0 2px -1px 0;
+  position: relative;
+}
+.progress-state .glyphicon {
+  padding: 10px 15px;
+}
+.progress-state .step .ico {
+  border: 1px solid transparent;
+  border-radius: 4px 4px 0 0;
+  display: block;
+  padding: 10px 15px;
+}
+.progress-state .active .ico {
+  color: #555;
+  cursor: default;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+}

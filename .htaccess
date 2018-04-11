@@ -1,2 +1,8 @@
-RewriteEngine On
-RewriteRule ^index\.html$ / [R=301,L]
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    RewriteCond %{HTTP_HOST} ^aveko\.cz$ [NC]
+    RewriteRule ^(.*)$ http://www.aveko.cz/$1 [R=301,L]
+    
+    RewriteRule ^index\.html$ / [R=301,L]
+</IfModule>
