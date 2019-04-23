@@ -157,7 +157,8 @@ window.btoa = window.btoa || function () {
   $(".download").on("click", function(event) {
     var $target,
       linkHref,
-      fileType;
+      fileType,
+      eventDescriptor;
 
     event.preventDefault();
 
@@ -165,7 +166,10 @@ window.btoa = window.btoa || function () {
     linkHref = $target.attr("href");
     fileType = linkHref.split(".").pop().toUpperCase();
 
-    dataLayer.push({event: "fileDownload", fileName: linkHref, fileType: fileType});
+    eventDescriptor = {event: "fileDownload", fileName: linkHref, fileType: fileType}
+
+    dataLayer.push(eventDescriptor);
+    console.log("Pushed to Data Layer: " + JSON.stringify(eventDescriptor, null, 2))
     setTimeout(function() {
       window.location = linkHref;
     }, 500);
