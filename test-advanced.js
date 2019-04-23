@@ -1,24 +1,27 @@
 // test-advanced.js
 var utils = require('utils');
 
-var resources = [];
+var adobeAnalyticsBeacons = [];
 
-casper.options.onResourceRequested = function(C, requestData, request) {
-  resources.push(requestData.url);
+casper.options.onResourceReceived = function(C, requestData, request) {
+  if (requestData.status == "200" && requestData.stage == "end") {
+    resources.push(requestData);
+  }
 };
 
 casper.test.begin('Demo contains correct Data Layer', 12, function suite(test) {
 
-  casper.start('http://demo.demogram.cz/', function() {
+  casper.start('https://demo.demogram.cz/', function() {
   
-    test.comment('Testing http://demo.demogram.cz/...');
+    test.comment('Testing https://demo.demogram.cz/...');
   
     test.assertEvalEquals(function(){return typeof digitalData}, 'object', 'digitalData is an object.');
     test.assertEval(function(){return digitalData instanceof Object}, 'digitalData is an instance of Object.');
 
+    //load.finished
     this.wait(1000, function() {
-      var gaRequested,
-          gaParams,
+      var aaRequested,
+          aaParams,
           match,
           pl,
           search,
@@ -26,35 +29,36 @@ casper.test.begin('Demo contains correct Data Layer', 12, function suite(test) {
           query;
       
       this.echo("I've waited for 1000 miliseconds.");
-      gaRequested = false;
-      
+      aaRequested = false;
+
       for (var i = 0; i < resources.length; i++) {
-        if (resources[i].match('www.google-analytics.com/r/collect') !== null) {
-          gaRequested = true;
+        if (resources[i].url.match('https://etnetera.d2.sc.omtrdc.net/b/ss/etnfinancial/') !== null) {
+          aaRequested = true;
           pl     = /\+/g,  // Regex for replacing addition symbol with a space
           search = /([^&=]+)=?([^&]*)/g,
-          decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
-          query  = resources[i].split("?")[1];
+          decode = function (s) {
+            return decodeURIComponent(s.replace(pl, " "));
+          },
+          query  = resources[i].url.split("?")[1];
       
-          gaParams = {};
+          aaParams = {};
           while (match = search.exec(query)) {
-            gaParams[decode(match[1])] = decode(match[2]);
+            aaParams[decode(match[1])] = decode(match[2]);
           }
-          this.echo("Google Analytics beacon params: \n" + JSON.stringify(gaParams, null, 2));
+          this.echo("Adobe Analytics beacon params: \n" + JSON.stringify(aaParams, null, 2));
         }
       }
-      test.assertEquals(gaRequested, true, 'Google Analytics beacon requested.');
-      test.assertEquals(gaParams.dt, 'Demo', 'Page Title "Demo" correctly sent to Google Analytics.');
-    });
+      test.assertEquals(aaRequested, true, 'Adobe Analytics beacon requested.');
+      test.assertEquals(aaParams.pageName, 'Demo: homepage', 'Page Name "Demo: homepage" correctly sent to Adobe Analytics.');
 
-    
-    this.fill('form#loginForm', {username: 'test'}, true);
-    test.assertEvalEquals(function(){return digitalData.userId}, 'HRlc3R0ZXN', 'digitalData.userId equals "HRlc3R0ZXN".');
+      this.fill('form#loginForm', {username: 'test'}, true);
+      test.assertEvalEquals(function(){return digitalData.userId}, 'HRlc3R0ZXN', 'digitalData.userId equals "HRlc3R0ZXN".');
+      });
   });
 
-  casper.thenOpen('http://demo.demogram.cz/lead.html', function() {
+  casper.thenOpen('https://demo.demogram.cz/lead.html', function() {
   
-    test.comment('Testing http://demo.demogram.cz/lead.html...');
+    test.comment('Testing https://demo.demogram.cz/lead.html...');
 
     test.assertEvalEquals(function(){return typeof digitalData}, 'object', 'digitalData is an object.');
     test.assertEval(function(){return digitalData instanceof Object}, 'digitalData is an instance of Object.');

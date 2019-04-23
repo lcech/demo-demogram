@@ -51,16 +51,25 @@
     <script type="text/javascript" src="/assets/js/moment.min.js"></script>
     <script type="text/javascript" src="/assets/js/locale/cs.js"></script>
     <script type="text/javascript" src="/assets/js/bootstrap-datetimepicker.min.js"></script><!-- Data Layer -->
-    <script type="text/javascript">
-    var digitalData = digitalData || {};
-    var measure = measure || function(){};
-    digitalData.pageType = "product";
-    digitalData.product = "LOAN";
-    digitalData.formId = "Loan";</script>
+    <script type="text/javascript">var dataLayer = dataLayer || [];dataLayer.push({pageType: "product404", product: "LOAN", formId: "Loan"});</script>
     <!-- DTM Header Code-->
-    <script src="https://assets.adobedtm.com/eaf07652005ffd09e7f3341ced093742164cb81e/satelliteLib-26d4c3cc3b0710e74d8e14b313e92b8cf3ead635.js"></script>
+    <!--script(src='https://assets.adobedtm.com/eaf07652005ffd09e7f3341ced093742164cb81e/satelliteLib-26d4c3cc3b0710e74d8e14b313e92b8cf3ead635.js')-->
+    <!-- Google Tag Manager-->
+    <script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-TBBCF5X');
+    </script>
+    <!-- End Google Tag Manager-->
   </head>
   <body>
+    <!-- Google Tag Manager (noscript)-->
+    <noscript>
+      <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TBBCF5X" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript)-->
     <div role="navigation" class="navbar navbar-default">
       <div class="container">
         <div class="navbar-header">
@@ -75,14 +84,14 @@
             <li><a href="/downloads.html">Downloads</a></li>
             <li><a href="/video.html">Video</a></li>
             <li><a href="/contact.html">Contact</a></li>
+            <form id="loginForm" role="form" style="display: none;" class="navbar-form navbar-right">
+              <div class="form-group">
+                <input type="text" name="username" placeholder="Username" class="form-control"> 
+                <input type="password" name="password" placeholder="Password" class="form-control"> 
+                <button type="submit" class="btn btn-success">Sign in</button>
+              </div>
+            </form>
           </ul>
-          <form id="loginForm" role="form" style="display: none;" class="navbar-form navbar-right">
-            <div class="form-group">
-              <input type="text" name="username" placeholder="Username" class="form-control"> 
-              <input type="password" name="password" placeholder="Password" class="form-control"> 
-              <button type="submit" class="btn btn-success">Sign in</button>
-            </div>
-          </form>
         </div>
         <!-- /.navbar-collapse-->
       </div>
@@ -196,7 +205,7 @@
     <hr>
     <div class="container">
       <footer>
-        <p><small>&copy; <a href='http://activate.etnetera.cz'>Etnetera Activate</a> 2015</small></p>
+        <p><small>&copy; <a href='https://www.activate.cz'>Activate</a></small></p>
       </footer>
       <!-- /container-->
     </div>
@@ -204,7 +213,6 @@
     <!-- ==================================================-->
     <script src="/assets/js/bootstrap.min.js"></script>
     <script src="/js/app.js"></script>
-    <!-- DTM Footer Code-->
-    <script type="text/javascript">measure({event: "pageLoaded"});</script>
+    <!-- N/A-->
   </body>
 </html>
