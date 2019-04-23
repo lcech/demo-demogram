@@ -101,7 +101,7 @@ window.btoa = window.btoa || function () {
   function logout() {
     store.remove("loggedInUser");
     $("#loggedInUser").remove();
-    dataLayer.push({event: "logout"});
+    measure({event: "logout"});
     setTimeout(function() {
       location.reload();
     }, 500);
@@ -124,7 +124,7 @@ window.btoa = window.btoa || function () {
     eventData.formId = "loginForm";
     eventData.event = "login";
 
-    dataLayer.push(eventData);
+    measure(eventData);
     this.reset();
   });
 
@@ -137,7 +137,7 @@ window.btoa = window.btoa || function () {
     eventData.formId = "leadForm";
     eventData.event = "leadSent";
 
-    dataLayer.push(eventData);
+    measure(eventData);
     this.reset();
   });
 
@@ -150,7 +150,7 @@ window.btoa = window.btoa || function () {
     eventData.formId = "contactForm";
     eventData.event = "contactSent";
 
-    dataLayer.push(eventData);
+    measure(eventData);
     this.reset();
   });
 
@@ -169,7 +169,15 @@ window.btoa = window.btoa || function () {
     eventDescriptor = {event: "fileDownload", fileName: linkHref, fileType: fileType}
 
     dataLayer.push(eventDescriptor);
-    console.log("Pushed to Data Layer: " + JSON.stringify(eventDescriptor, null, 2))
+    console.log("Pushed to Data Layer: " + JSON.stringify(eventDescriptor, null, 2));
+
+    event.preventDefault();
+
+    $target = $(event.target);
+    linkHref = $target.attr("href");
+    fileType = linkHref.split(".").pop().toUpperCase();
+
+    measure({event: "fileDownload", fileName: linkHref, fileType: fileType});
     setTimeout(function() {
       window.location = linkHref;
     }, 500);
@@ -226,7 +234,7 @@ window.btoa = window.btoa || function () {
         event.preventDefault();
 
         output.event = "validationFailed";
-        dataLayer.push(output);
+        measure(output);
         output.errors = [];
       })
       .on("success.form.bv", function(event) {
@@ -239,7 +247,7 @@ window.btoa = window.btoa || function () {
         output.formStep = "1";
         output.errors = [];
 
-        dataLayer.push(output);
+        measure(output);
 
         $("#step1").hide();
         $("#step1tab").removeClass("active");
@@ -258,7 +266,7 @@ window.btoa = window.btoa || function () {
     eventData.event = "wizardStep2Sent";
     output.errors = [];
 
-    dataLayer.push(eventData);
+    measure(eventData);
 
     $("#step2").hide();
     $("#step2tab").removeClass("active");
@@ -269,7 +277,7 @@ window.btoa = window.btoa || function () {
   $("#wizardStep1 :input").change(function(event) {
     var $target;
     $target = $(event.target);
-    dataLayer.push({
+    measure({
       event: "inputChange",
       fieldName: $("label[for=" + $target.attr("id") + "]").text(),
       fieldValue: $target.val()
@@ -277,7 +285,7 @@ window.btoa = window.btoa || function () {
   });
 
   $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-    dataLayer.push({
+    measure({
       event: "tabClick",
       tabName: $(e.target).text().trim()
     });
