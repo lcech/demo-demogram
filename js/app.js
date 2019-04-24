@@ -48,19 +48,19 @@ window.btoa = window.btoa || function () {
 (function($) {
   var loggedInUser;
   $.fn.serializeObject = function() {
-    var o = {};
+    var myObject = {};
     var a = this.serializeArray();
     $.each(a, function() {
-      if (o[this.name] !== undefined) {
-        if (!o[this.name].push) {
-          o[this.name] = [o[this.name]];
+      if (myObject[this.name] !== undefined) {
+        if (!myObject[this.name].push) {
+          myObject[this.name] = [myObject[this.name]];
         }
-        o[this.name].push(this.value || '');
+        myObject[this.name].push(this.value || '');
       } else {
-        o[this.name] = this.value || '';
+        myObject[this.name] = this.value || '';
       }
     });
-    return o;
+    return myObject;
   };
 
   // Init
@@ -87,9 +87,14 @@ window.btoa = window.btoa || function () {
 
   // Login
   function login(loggedInUser) {
-    var $loginForm;
+    var $loginForm,
+        eventData;
 
-    digitalData.userId = getUserId(loggedInUser);
+    eventData = {userId: getUserId(loggedInUser)};
+
+    console.log("Pushing to Data Layer: " + JSON.stringify(eventData, null, 2));
+    dataLayer.push(eventData);
+
     $loginForm = $("#loginForm");
     $loginForm.after("<span id=\"loggedInUser\" class=\"navbar-text navbar-right\">Logged in as: <strong>" + loggedInUser + "</strong></span>");
     $loginForm.hide();
@@ -290,7 +295,7 @@ window.btoa = window.btoa || function () {
   $("#wizardStep1 :input").change(function(event) {
     var $target,
         eventData;
-        
+
     $target = $(event.target);
     eventData = {
       event: "inputChange",
