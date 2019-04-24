@@ -345,7 +345,7 @@ function refreshIframeAPI() {
     if (/youtube.com\/embed/.test(iframes[i].src)) {
       youtubePlayerIframes.push(iframes[i]);
       if (iframes[i].src.indexOf('enablejsapi=') === -1) {
-        iframes[i].src += (iframes[i].src.indexOf('?') === -1 ? '?' : '&') + 'enablejsapi=1';
+        iframes[i].src += (iframes[i].src.indexOf('?') === -1 ? '?' : '&') + 'enablejsapi=1&origin=https://demo.demogram.cz';
       }
     }
   }
