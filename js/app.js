@@ -101,7 +101,7 @@ window.btoa = window.btoa || function () {
   function logout() {
     store.remove("loggedInUser");
     $("#loggedInUser").remove();
-    measure({event: "logout"});
+    dataLayer.push({event: "logout"});
     setTimeout(function() {
       location.reload();
     }, 500);
@@ -124,7 +124,7 @@ window.btoa = window.btoa || function () {
     eventData.formId = "loginForm";
     eventData.event = "login";
 
-    measure(eventData);
+    dataLayer.push(eventData);
     this.reset();
   });
 
@@ -137,7 +137,7 @@ window.btoa = window.btoa || function () {
     eventData.formId = "leadForm";
     eventData.event = "leadSent";
 
-    measure(eventData);
+    dataLayer.push(eventData);
     this.reset();
   });
 
@@ -150,7 +150,7 @@ window.btoa = window.btoa || function () {
     eventData.formId = "contactForm";
     eventData.event = "contactSent";
 
-    measure(eventData);
+    dataLayer.push(eventData);
     this.reset();
   });
 
@@ -233,7 +233,7 @@ window.btoa = window.btoa || function () {
         event.preventDefault();
 
         output.event = "validationFailed";
-        measure(output);
+        dataLayer.push(output);
         output.errors = [];
       })
       .on("success.form.bv", function(event) {
@@ -246,7 +246,7 @@ window.btoa = window.btoa || function () {
         output.formStep = "1";
         output.errors = [];
 
-        measure(output);
+        dataLayer.push(output);
 
         $("#step1").hide();
         $("#step1tab").removeClass("active");
@@ -265,7 +265,7 @@ window.btoa = window.btoa || function () {
     eventData.event = "wizardStep2Sent";
     output.errors = [];
 
-    measure(eventData);
+    dataLayer.push(eventData);
 
     $("#step2").hide();
     $("#step2tab").removeClass("active");
@@ -276,7 +276,7 @@ window.btoa = window.btoa || function () {
   $("#wizardStep1 :input").change(function(event) {
     var $target;
     $target = $(event.target);
-    measure({
+    dataLayer.push({
       event: "inputChange",
       fieldName: $("label[for=" + $target.attr("id") + "]").text(),
       fieldValue: $target.val()
@@ -284,7 +284,7 @@ window.btoa = window.btoa || function () {
   });
 
   $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-    measure({
+    dataLayer.push({
       event: "tabClick",
       tabName: $(e.target).text().trim()
     });
