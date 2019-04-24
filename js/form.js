@@ -1,7 +1,6 @@
-/*global $,measure*/
-var digitalData = digitalData || {};
-var output = output || {};
-output.errors = output.errors || [];
+/*global $,dataLayer*/
+var eventData = eventData || {};
+eventData.errors = eventData.errors || [];
 
 $('#datepicker').datetimepicker({
   locale: 'cs',
@@ -199,7 +198,7 @@ $('#form').bootstrapValidator({
     default:
       value = data.element[0].value;
     }
-    output.errors.push({
+    eventData.errors.push({
       fieldName: data.field,
       errorType: data.validator,
       fieldValue: value
@@ -208,14 +207,20 @@ $('#form').bootstrapValidator({
   .on('error.form.bv', function(event) {
     event.preventDefault();
     
-    output.event = 'validationFailed';
-    measure(output);
-    output.errors = [];
+    eventData.event = 'validationFailed';
+    
+    console.log("Pushing to Data Layer: " + JSON.stringify(eventData, null, 2));
+    dataLayer.push(eventData);
+
+    eventData.errors = [];
   })
   .on('success.form.bv', function(event) {
     event.preventDefault();
     
-    output.event = 'formSent';
-    measure(output);
-    output.errors = [];
+    eventData.event = 'formSent';
+
+    console.log("Pushing to Data Layer: " + JSON.stringify(eventData, null, 2));
+    dataLayer.push(eventData);
+
+    eventData.errors = [];
   });
