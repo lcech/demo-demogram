@@ -177,7 +177,6 @@ window.btoa = window.btoa || function () {
     linkHref = $target.attr("href");
     fileType = linkHref.split(".").pop().toUpperCase();
 
-    measure({event: "fileDownload", fileName: linkHref, fileType: fileType});
     setTimeout(function() {
       window.location = linkHref;
     }, 500);
