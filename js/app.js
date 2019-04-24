@@ -196,7 +196,7 @@ window.btoa = window.btoa || function () {
     }, 500);
   });
   
-    var $wizardStep1 = $("#wizardStep1");
+  var $wizardStep1 = $("#wizardStep1");
   if (typeof $wizardStep1.get(0) !== "undefined") {
     $wizardStep1.bootstrapValidator({
       feedbackIcons: {
@@ -320,3 +320,58 @@ window.btoa = window.btoa || function () {
   })
 
 })(jQuery);
+
+/*
+ * Global Variable for available Youtube players
+ */
+var youtubePlayers = [],
+  youtubePlayerIframes = [];
+
+/*
+ * Refresh iframes without enabled API
+ */
+function refreshIframeAPI() {
+  for (var iframes = document.getElementsByTagName("iframe"), i = iframes.length; i--;) {
+    if (/youtube.com\/embed/.test(iframes[i].src)) {
+      youtubePlayerIframes.push(iframes[i]);
+      if (iframes[i].src.indexOf('enablejsapi=') === -1) {
+        iframes[i].src += (iframes[i].src.indexOf('?') === -1 ? '?' : '&') + 'enablejsapi=1';
+      }
+    }
+  }
+}
+
+function onYouTubeIframeAPIReady() {
+  refreshIframeAPI();
+  for (var i = 0; i < youtubePlayerIframes.length; i++) {
+    youtubePlayers.push(new YT.Player(youtubePlayerIframes[i], {
+      events: {
+        "onStateChange": onPlayerStateChange
+      }
+    }));
+  }
+}
+
+function onPlayerStateChange(event) {
+  var videoData,
+      eventData;
+  
+  videoData = event.target.getVideoData();
+  switch (event.data) {
+  case YT.PlayerState.PLAYING:
+    eventData = {event: "videoPlay", video: {id: videoData.video_id, title: videoData.title}};
+    console.log("Pushing to Data Layer: " + JSON.stringify(eventData, null, 2));
+    dataLayer.push(eventData);
+    break;
+  case YT.PlayerState.PAUSED:
+    eventData = {event: "videoPause", video: {id: videoData.video_id, title: videoData.title, timePlayed: event.target.getCurrentTime()}};
+    console.log("Pushing to Data Layer: " + JSON.stringify(eventData, null, 2));
+    dataLayer.push(eventData);
+    break;
+  case YT.PlayerState.ENDED:
+    eventData = {event: "videoEnd", video: {id: videoData.video_id, title: videoData.title, timePlayed: event.target.getCurrentTime()}};
+    console.log("Pushing to Data Layer: " + JSON.stringify(eventData, null, 2));
+    dataLayer.push(eventData);
+    break;
+  }
+}
