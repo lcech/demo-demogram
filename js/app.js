@@ -1,6 +1,6 @@
 var dataLayer = dataLayer || [];
-var output = output || {};
-output.errors = output.errors || [];
+var eventData = eventData || {};
+eventData.errors = eventData.errors || [];
 
 //global jQuery
 window.btoa = window.btoa || function () {
@@ -99,9 +99,15 @@ window.btoa = window.btoa || function () {
 
   // Logout
   function logout() {
+    var eventData;
     store.remove("loggedInUser");
     $("#loggedInUser").remove();
-    dataLayer.push({event: "logout"});
+
+    eventData = {event: "logout"};
+
+    console.log("Pushing to Data Layer: " + JSON.stringify(eventData, null, 2));
+    dataLayer.push(eventData);
+
     setTimeout(function() {
       location.reload();
     }, 500);
@@ -124,6 +130,7 @@ window.btoa = window.btoa || function () {
     eventData.formId = "loginForm";
     eventData.event = "login";
 
+    console.log("Pushing to Data Layer: " + JSON.stringify(eventData, null, 2));
     dataLayer.push(eventData);
     this.reset();
   });
@@ -137,6 +144,7 @@ window.btoa = window.btoa || function () {
     eventData.formId = "leadForm";
     eventData.event = "leadSent";
 
+    console.log("Pushing to Data Layer: " + JSON.stringify(eventData, null, 2));
     dataLayer.push(eventData);
     this.reset();
   });
@@ -150,6 +158,7 @@ window.btoa = window.btoa || function () {
     eventData.formId = "contactForm";
     eventData.event = "contactSent";
 
+    console.log("Pushing to Data Layer: " + JSON.stringify(eventData, null, 2));
     dataLayer.push(eventData);
     this.reset();
   });
@@ -158,7 +167,7 @@ window.btoa = window.btoa || function () {
     var $target,
       linkHref,
       fileType,
-      eventDescriptor;
+      eventData;
 
     event.preventDefault();
 
@@ -166,10 +175,10 @@ window.btoa = window.btoa || function () {
     linkHref = $target.attr("href");
     fileType = linkHref.split(".").pop().toUpperCase();
 
-    eventDescriptor = {event: "fileDownload", fileName: linkHref, fileType: fileType}
+    eventData = {event: "fileDownload", fileName: linkHref, fileType: fileType}
 
-    dataLayer.push(eventDescriptor);
-    console.log("Pushed to Data Layer: " + JSON.stringify(eventDescriptor, null, 2));
+    console.log("Pushing to Data Layer: " + JSON.stringify(eventData, null, 2));
+    dataLayer.push(eventData);
 
     event.preventDefault();
 
@@ -223,7 +232,7 @@ window.btoa = window.btoa || function () {
         default:
           value = data.element[0].value;
         }
-        output.errors.push({
+        eventData.errors.push({
           fieldName: data.field,
           failedRule: data.validator,
           fieldValue: value
@@ -232,21 +241,25 @@ window.btoa = window.btoa || function () {
       .on("error.form.bv", function(event) {
         event.preventDefault();
 
-        output.event = "validationFailed";
-        dataLayer.push(output);
-        output.errors = [];
+        eventData.event = "validationFailed";
+
+        console.log("Pushing to Data Layer: " + JSON.stringify(eventData, null, 2));
+        dataLayer.push(eventData);
+
+        eventData.errors = [];
       })
       .on("success.form.bv", function(event) {
         var pushId;
         event.preventDefault();
 
-        output = $(this).serializeObject();
-        output.event = "wizardStep1Sent";
-        output.formId = "Wizard";
-        output.formStep = "1";
-        output.errors = [];
+        eventData = $(this).serializeObject();
+        eventData.event = "wizardStep1Sent";
+        eventData.formId = "Wizard";
+        eventData.formStep = "1";
+        eventData.errors = [];
 
-        dataLayer.push(output);
+        console.log("Pushing to Data Layer: " + JSON.stringify(eventData, null, 2));
+        dataLayer.push(eventData);
 
         $("#step1").hide();
         $("#step1tab").removeClass("active");
@@ -263,8 +276,9 @@ window.btoa = window.btoa || function () {
     eventData = $(this).serializeObject();
     eventData.formId = "Wizard";
     eventData.event = "wizardStep2Sent";
-    output.errors = [];
+    eventData.errors = [];
 
+    console.log("Pushing to Data Layer: " + JSON.stringify(eventData, null, 2));
     dataLayer.push(eventData);
 
     $("#step2").hide();
@@ -274,20 +288,30 @@ window.btoa = window.btoa || function () {
   });
 
   $("#wizardStep1 :input").change(function(event) {
-    var $target;
+    var $target,
+        eventData;
+        
     $target = $(event.target);
-    dataLayer.push({
+    eventData = {
       event: "inputChange",
       fieldName: $("label[for=" + $target.attr("id") + "]").text(),
       fieldValue: $target.val()
-    });
+    };
+
+    console.log("Pushing to Data Layer: " + JSON.stringify(eventData, null, 2));
+    dataLayer.push(eventData);
   });
 
   $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-    dataLayer.push({
+    var eventData;
+
+    eventData = {
       event: "tabClick",
       tabName: $(e.target).text().trim()
-    });
+    };
+    
+    console.log("Pushing to Data Layer: " + JSON.stringify(eventData, null, 2));
+    dataLayer.push(eventData);
   })
 
 })(jQuery);
